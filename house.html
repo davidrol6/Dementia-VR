@@ -8,12 +8,13 @@
     <script src="./aframe-room-component/dist/aframe-room-component.js"></script>
     <script src="https://unpkg.com/aframe-environment-component@1.3.3/dist/aframe-environment-component.min.js"></script>
     <script src="./src/aframe-door-component.js"></script>
+    <script src="./src/kinema.js"></script>
     <script src="https://recast-api.donmccurdy.com/aframe-inspector-plugin-recast.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-physics-system@v4.2.2/dist/aframe-physics-system.min.js"></script>
 
   </head>
   <body>
-    <a-scene physics="gravity: 0 -9.8 0">
+    <a-scene timedelta="1000">
       
       <a-assets>
                 
@@ -26,81 +27,93 @@
 
       </a-assets>
       <a-entity environment="preset: default; ground:flat"></a-entity>
-      <a-entity id="rig">
-        <a-entity id="camera" camera wasd-controls look-controls position="0 1.6 0" >
+
+
+      <!--<a-entity wasd-controls kinema-body="radius: 0.8" movement-controls="fly: false" position="0 0 5" look-controls>
+        <a-entity id="camera" camera position="0 1.6 0" ></a-entity>
           <a-cursor fuse="false" rayOrigin="mouse"></a-entity>
+      </a-entity>-->
+
+
+      <a-entity id="rig">
+        <a-entity id="camera" camera wasd-controls="acceleration:20" look-controls position="0 1.6 0" geometry="primitive: sphere; radius: 11">
+          <!-- Move the raycaster inside the camera entity as a child entity -->
+          <a-cursor id="front-cursor" raycaster="interval:100;showLine:true; enabled:true;far:2" position="0 0 -1" ></a-cursor>
+          <a-cursor id="left-cursor" rotation="0 90 0" raycaster="interval: 100; showLine: true; enabled: true" position="-1 0 0"></a-cursor>
+          <a-cursor id="right-cursor" rotation="0 -90 0" raycaster="interval: 100; showLine: true; enabled: true" position="1 0 0"></a-cursor>
+          <a-cursor id="back-cursor" raycaster="interval: 100; showLine: true; enabled: true" position="0 0 1" rotation="0 180 0"></a-cursor>
         </a-entity>
-      </a-entity> 
+      </a-entity>
 
       
       <a-entity id="door-salon"  position=" 1 1 -3.5" rotation="0 -90 0">
         <a-box width="0.1" height="2.4" depth="0.1" color="white" position="0.6 0 0"></a-box>
         <a-box width="0.1" height="2.4" depth="0.1" color="white" position="-0.6 0 0"></a-box>
         <a-box  width="1.3" height="0.1" depth="0.1" color="white" position="0 1.2 0"></a-box>
-        <a-box  door-test="rotation: 0 90 0" door-opener-test="rotation: 0 90 0" width="1.1" height="2.3" depth="0.1" color="brown" pivot="-0.55 0 0" position="0 0 0" rotation="0 0 0"></a-box>
+        <a-box  raycaster-collide class="clickable" door-test="rotation: 0 90 0" door-opener-test="rotation: 0 90 0" width="1.1" height="2.3" depth="0.1" color="brown" pivot="-0.55 0 0" position="0 0 0" rotation="0 0 0"></a-box>
       </a-entity>
 
       <a-entity id="door-outside" position="-5.5 1 -3.5" rotation="0 -90 0">
         <a-box width="0.1" height="2.4" depth="0.1" color="white" position="0.6 0 0"></a-box>
         <a-box width="0.1" height="2.4" depth="0.1" color="white" position="-0.6 0 0"></a-box>
         <a-box width="1.3" height="0.1" depth="0.1" color="white" position="0 1.2 0"></a-box>
-        <a-box door-test="rotation: 0 90 0"door-opener-test="rotation: 0 90 0"width="1.1" height="2.3" depth="0.1" color="brown" pivot="-0.55 0 0" position="0 0 0" rotation="0 0 0"></a-box>
+        <a-box raycaster-collide door-test="rotation: 0 90 0" door-opener-test="rotation: 0 90 0"width="1.1" height="2.3" depth="0.1" color="brown" pivot="-0.55 0 0" position="0 0 0" rotation="0 0 0"></a-box>
       </a-entity>
 
 
-      <a-entity id="door-kitchen" position=" 0.25 1 -2.5" rotation="0 180 0">
-        <a-box   width="0.1" height="2.4" depth="0.1" color="white" position="0.6 0 0"></a-box>
-        <a-box   width="0.1" height="2.4" depth="0.1" color="white" position="-0.6 0 0"></a-box>
-        <a-box  width="1.3" height="0.1" depth="0.1" color="white" position="0 1.2 0"></a-box>
-          <a-box door-test="rotation: 0 90 0" door-opener-test="rotation: 0 90 0"width="1.1" height="2.3" depth="0.1" color="brown" pivot="-0.55 0 0" position="0 0 0" rotation="0 0 0"></a-box>
+      <a-entity class="collidable" id="door-kitchen" position=" 0.25 1 -2.5" rotation="0 180 0">
+        <a-box class="collidable"  width="0.1" height="2.4" depth="0.1" color="white" position="0.6 0 0"></a-box>
+        <a-box   class="collidable" width="0.1" height="2.4" depth="0.1" color="white" position="-0.6 0 0"></a-box>
+        <a-box  class="collidable" width="1.3" height="0.1" depth="0.1" color="white" position="0 1.2 0"></a-box>
+          <a-box raycaster-collide class="clickable" door-test="rotation: 0 90 0" door-opener-test="rotation: 0 90 0"width="1.1" height="2.3" depth="0.1" color="brown" pivot="-0.55 0 0" position="0 0 0" rotation="0 0 0"></a-box>
       </a-entity>
 
       <a-entity id="door-bedroom1" position=" -1.5 1 -9.5" rotation="0 90 0">
         <a-box width="0.1" height="2.4" depth="0.1" color="white" position="0.6 0 0"></a-box>
         <a-box width="0.1" height="2.4" depth="0.1" color="white" position="-0.6 0 0"></a-box>
         <a-box width="1.3" height="0.1" depth="0.1" color="white" position="0 1.2 0"></a-box>
-        <a-box  door-test="rotation: 0 90 0" door-opener-test="rotation: 0 90 0"width="1.1" height="2.3" depth="0.1" color="brown" pivot="-0.55 0 0" position="0 0 0" rotation="0 0 0"></a-box>
+        <a-box  raycaster-collide door-test="rotation: 0 90 0" door-opener-test="rotation: 0 90 0"width="1.1" height="2.3" depth="0.1" color="brown" pivot="-0.55 0 0" position="0 0 0" rotation="0 0 0"></a-box>
       </a-entity>
 
       <a-entity id="door-bedroom2" position=" -0.75 1 -10.5" rotation="0 0 0">
         <a-box width="0.1" height="2.4" depth="0.1" color="white" position="0.6 0 0"></a-box>
         <a-box width="0.1" height="2.4" depth="0.1" color="white" position="-0.6 0 0"></a-box>
         <a-box width="1.3" height="0.1" depth="0.1" color="white" position="0 1.2 0"></a-box>
-        <a-box door-test="rotation: 0 90 0" door-opener-test="rotation: 0 90 0"width="1.1" height="2.3" depth="0.1" color="brown" pivot="-0.55 0 0" position="0 0 0" rotation="0 0 0"></a-box>
+        <a-box raycaster-collide door-test="rotation: 0 90 0" door-opener-test="rotation: 0 90 0"width="1.1" height="2.3" depth="0.1" color="brown" pivot="-0.55 0 0" position="0 0 0" rotation="0 0 0"></a-box>
       </a-entity>
 
       <a-entity id="door-bathroom1" position=" 2 1 -8" rotation="0 0 0">
         <a-box width="0.1" height="2.4" depth="0.1" color="white" position="0.6 0 0"></a-box>
         <a-box width="0.1" height="2.4" depth="0.1" color="white" position="-0.6 0 0"></a-box>
         <a-box width="1.3" height="0.1" depth="0.1" color="white" position="0 1.2 0"></a-box>
-        <a-box door-test="rotation: 0 90 0" door-opener-test="rotation: 0 -90 0"width="1.1" height="2.3" depth="0.1" color="brown" pivot="-0.55 0 0" position="0 0 0" rotation="0 0 0"></a-box>
+        <a-box raycaster-collide door-test="rotation: 0 90 0" door-opener-test="rotation: 0 -90 0"width="1.1" height="2.3" depth="0.1" color="brown" pivot="-0.55 0 0" position="0 0 0" rotation="0 0 0"></a-box>
       </a-entity>
 
       <a-entity id="door-bedroom3" position=" 4 1 -9.25" rotation="0 90 0">
         <a-box width="0.1" height="2.4" depth="0.1" color="white" position="0.6 0 0"></a-box>
         <a-box width="0.1" height="2.4" depth="0.1" color="white" position="-0.6 0 0"></a-box>
         <a-box width="1.3" height="0.1" depth="0.1" color="white" position="0 1.2 0"></a-box>
-        <a-box door-test="rotation: 0 90 0" door-opener-test="rotation: 0 -90 0"width="1.1" height="2.3" depth="0.1" color="brown" pivot="-0.55 0 0" position="0 0 0" rotation="0 0 0"></a-box>
+        <a-box raycaster-collide door-test="rotation: 0 90 0" door-opener-test="rotation: 0 -90 0"width="1.1" height="2.3" depth="0.1" color="brown" pivot="-0.55 0 0" position="0 0 0" rotation="0 0 0"></a-box>
       </a-entity>
 
       <a-entity id="door-bathroom2" position=" 9 1 -8" rotation="0 0 0">
         <a-box width="0.1" height="2.4" depth="0.1" color="white" position="0.6 0 0"></a-box>
         <a-box width="0.1" height="2.4" depth="0.1" color="white" position="-0.6 0 0"></a-box>
         <a-box width="1.3" height="0.1" depth="0.1" color="white" position="0 1.2 0"></a-box>
-        <a-box door-test="rotation: 0 90 0" door-opener-test="rotation: 0 -90 0"width="1.1" height="2.3" depth="0.1" color="brown" pivot="-0.55 0 0" position="0 0 0" rotation="0 0 0"></a-box>
+        <a-box raycaster-collide door-test="rotation: 0 90 0" door-opener-test="rotation: 0 -90 0"width="1.1" height="2.3" depth="0.1" color="brown" pivot="-0.55 0 0" position="0 0 0" rotation="0 0 0"></a-box>
       </a-entity>
 
 
 <!-- cocina-->
     <rw-room position="-2.5 0.01 -2.5" width="3.5" length="6" height="3">
         
-        <rw-wall class="collidable"  material="src:#kitchen-wall;repeat:2 2">
+        <rw-wall material="src:#kitchen-wall;repeat:2 2">
           <rw-doorhole id="cocina"></rw-doorhole>
         </rw-wall>
-        <rw-wall class="collidable"  material="src:#kitchen-wall;repeat:2 2"></rw-wall>
-        <rw-wall class="collidable"  material="src:#kitchen-wall;repeat:2 2">
+        <rw-wall material="src:#kitchen-wall;repeat:2 2"></rw-wall>
+        <rw-wall material="src:#kitchen-wall;repeat:2 2">
         </rw-wall>
-        <rw-wall class="collidable"  material="src:#kitchen-wall;repeat:2 2"></rw-wall>
+        <rw-wall material="src:#kitchen-wall;repeat:2 2"></rw-wall>
         
         <rw-floor material="src:#kitchen-floor;repeat:2 2"></rw-floor>
         <rw-ceiling material="color:#FFF"></rw-ceiling>
