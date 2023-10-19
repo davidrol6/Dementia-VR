@@ -62,14 +62,12 @@ AFRAME.registerComponent("door-test", {
     init: function () {
       // Initial rotation of the door
       this.element = this.el;
+      var el = this.el
       this.closedRotation = this.element.getAttribute("rotation"); // Modify this to suit your door's closed state
       this.element.addEventListener('click', this.toggleDoor.bind(this))
-      this.el.addEventListener("raycaster-intersected", evt => {
-        this.intersectingRaycaster = evt.detail.el.components.raycaster;
-        this.detail = evt.detail;
-      });
-      this.el.addEventListener("raycaster-intersected-cleared", () => {
-        this.intersectingRaycaster = null;
+      
+      this.element.addEventListener('mouseenter', function () {
+        console.log("DENTRO");
       });
       
     },
@@ -129,8 +127,9 @@ AFRAME.registerComponent("door-test", {
           var el = evt.target;
     // May get two intersection events per tick; same element, different faces.
           self.evt = evt;
+          //console.log(evt);
           this.components["raycaster-collide"].data.intersecting = true;
-          console.log('raycaster-intersected ' + el.outerHTML);
+          //console.log('raycaster-intersected ' + el.outerHTML);
           el.setAttribute('material', 'color', '#7f7');
         }
       });
@@ -141,7 +140,7 @@ AFRAME.registerComponent("door-test", {
           this.components["raycaster-collide"].data.intersecting = false;
           var el = evt.target;
     // May get two intersection events per tick; same element, different faces.
-          console.log('raycaster-intersected-cleared ' + el.outerHTML);
+          //console.log('raycaster-intersected-cleared ' + el.outerHTML);
           el.setAttribute('material', 'color', '#f77');
         }
       }); 
@@ -154,13 +153,13 @@ AFRAME.registerComponent("door-test", {
       
       this.timer += timedelta;
       if (this.timer >= 100){
-        console.log(this.evt);
+        //console.log(this.evt);
       // Perform your periodic intersection check logic here.
       // For example, you can check the intersection status and take action.
         if (this.data.intersecting) {
-          console.log("Intersectando")
+          //console.log("Intersectando")
           //console.log(this)
-          console.log(this.el.components["door-test"]["data"]["opened"]);
+          //console.log(this.el.components["door-test"]["data"]["opened"]);
           // Element is currently intersecting the raycaster.
           // Add your code to handle this scenario.
 
@@ -175,16 +174,16 @@ AFRAME.registerComponent("door-test", {
             doorObject3D.getWorldPosition(doorPosition);
             cameraObject3D.getWorldPosition(cameraPosition);
             const distance = cameraPosition.distanceTo(doorPosition);
-            console.log(distance)
-            console.log(proximity)
+            //console.log(distance)
+            //console.log(proximity)
             if (distance < proximity) {
           
               var is_opened = this.el.components["door-test"].data.opened
-              console.log(is_opened)
+              //console.log(is_opened)
               if (is_opened){
                 camera.setAttribute('wasd-controls', {});
               } else {
-                console.log("CHOCANDO")
+                //console.log("CHOCANDO")
                 var impulseStrength = 0.5; // Adjust the impulse strength as needed
                 var point = intersection.point
                 var cameraPos = camera.getAttribute("position")
@@ -203,7 +202,7 @@ AFRAME.registerComponent("door-test", {
           }
 
         } else {
-          console.log("No intersectando")
+          //console.log("No intersectando")
           // Element is not intersecting the raycaster.
           // Add your code to handle this scenario.
         }
